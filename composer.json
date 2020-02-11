@@ -4,7 +4,7 @@
 	"type": "yii2-extension",
 	"keywords": [
 		"yii2",
-		"activerecord",
+		"activerecord"
 	],
 	"license": "GPL-3.0",
 	"authors": [
