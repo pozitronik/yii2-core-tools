@@ -27,7 +27,7 @@
 		"yiisoft/yii2": "~2.0.0",
 		"php": ">=7.2.0",
 		"pozitronik/yii2-helpers": "dev-master",
-		"pozitronik/yii2-arlogger": "dev-master",
+		"pozitronik/yii2-arlogger": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
