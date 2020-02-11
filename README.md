@@ -1,2 +1,43 @@
-# yii2-core-tools
-ÐÐ°Ñ€Ð°Ð±Ð¾Ñ‚ÐºÐ¸ ÑÐ¾Ð±ÑÑ‚Ð²ÐµÐ½Ð½Ñ‹Ñ… Ñ€Ð°ÑÑˆÐ¸Ñ€ÐµÐ½Ð¸Ð¹ Ð´Ð»Ñ Yii2.
+Yii2-core-tools
+==================
+Ðàñøèðåíèÿ YII2, èñïîëüçóåìûå äëÿ ñîáñòâåííûõ öåëåé.
+
+Installation
+------------
+
+The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
+
+Add
+
+```
+{
+	"type": "vcs",
+	"url": "https://github.com/pozitronik/yii2-core-tools"
+} 
+```
+
+to the repositories section of your `composer.json` file.
+
+Either run
+
+```
+php composer.phar require --prefer-dist pozitronik/yii2-core-tools "*"
+```
+
+or add
+
+```
+"pozitronik/yii2-core-tools": "*"
+```
+
+to the require section of your `composer.json` file.
+
+Requirements
+------------
+
+Yii2,
+PHP >= 7.2.0
+
+Usage
+-----
+Not documented yet.
