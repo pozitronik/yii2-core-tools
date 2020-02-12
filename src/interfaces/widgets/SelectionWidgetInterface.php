@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\core;
+namespace pozitronik\core\interfaces\widgets;
 
 /**
  * Интерфейс виджетов-выбиралок (несущественный, просто вынос констант. Возможно, будет дополнен методами геттерами-сеттерами атрибутов

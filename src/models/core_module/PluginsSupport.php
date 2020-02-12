@@ -1,14 +1,15 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\core\core_module;
+namespace pozitronik\core\models\core_module;
 
+use pozitronik\core\interfaces\reference\ReferenceInterface;
+use pozitronik\core\interfaces\access\UserRightInterface;
 use pozitronik\helpers\ArrayHelper;
-use app\modules\privileges\models\UserRightInterface;
-use app\modules\references\models\Reference;
 use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
 
 /**
  * Class PluginsSupport
@@ -118,7 +119,7 @@ class PluginsSupport {
 	 * Возвращает массив моделей справочников, подключаемых в конфигурации плагина, либо одну модель (при задании $referenceClassName)
 	 * @param string $pluginId id плагина
 	 * @param null|string Имя класса загружаемого справочника
-	 * @return Reference[]|Reference|null
+	 * @return ReferenceInterface[]|ReferenceInterface|null
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 */
@@ -137,7 +138,7 @@ class PluginsSupport {
 			}
 
 			foreach ($references as $reference) {
-				/** @var Reference $referenceObject */
+				/** @var ReferenceInterface|Model $referenceObject */
 				$referenceObject = Yii::createObject($reference);
 				if ($referenceClassName === $referenceObject->formName()) {
 					$referenceObject->pluginId = $plugin->id;
@@ -150,7 +151,7 @@ class PluginsSupport {
 
 	/**
 	 * Возвращает массив справочников, подключаемых в конфигурациях плагинов
-	 * @return Reference[]
+	 * @return ReferenceInterface[]
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 */

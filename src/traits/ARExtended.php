@@ -3,22 +3,19 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\traits;
 
+use pozitronik\core\models\sys_exceptions\SysExceptions;
 use pozitronik\helpers\ArrayHelper;
-use app\models\core\SysExceptions;
-use app\modules\privileges\models\AccessMethods;
-use app\modules\privileges\models\UserAccess;
-use app\modules\import\models\ImportException;
-use app\widgets\alert\AlertModel;
 use RuntimeException;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
-use yii\base\Model;
 use yii\db\ActiveRecord;
 use Throwable;
+use yii\db\Transaction;
+use yii\helpers\VarDumper;
 
 /**
  * Trait ARExtended
  * Расширения модели ActiveRecord
- *
  */
 trait ARExtended {
 
@@ -102,7 +99,8 @@ trait ARExtended {
 	 * @param bool $ignoreEmptyCondition Игнорировать пустое поисковое значение
 	 * @param bool $forceUpdate Если запись по условию найдена, пытаться обновить её
 	 * @return ActiveRecord|self|null
-	 * @throws ImportException
+	 * @throws Exception
+	 * @throws InvalidConfigException
 	 */
 	public static function addInstance(array $searchCondition, ?array $fields = null, bool $ignoreEmptyCondition = true, bool $forceUpdate = false):?self {
 		if ($ignoreEmptyCondition && (empty($searchCondition) || (is_array($searchCondition) && empty(reset($searchCondition))))) return null;
@@ -111,7 +109,7 @@ trait ARExtended {
 		if ($instance->isNewRecord || $forceUpdate) {
 			$instance->loadArray($fields??$searchCondition);
 			if (!$instance->save()) {
-				throw new ImportException($instance, $instance->errors);
+				throw new Exception("{$instance->formName()} errors: ".VarDumper::dumpAsString($instance->errors));
 			}
 		}
 		return $instance;
@@ -187,14 +185,7 @@ trait ARExtended {
 	 * Универсальная функция удаления любой модели
 	 */
 	public function safeDelete():void {
-		/** @var Model $this */
-		if (!UserAccess::canAccess($this, AccessMethods::delete)) {
-			AlertModel::AccessNotify();
-			return;
-		}
-
 		if ($this->hasAttribute('deleted')) {
-			/** @noinspection PhpUndefinedFieldInspection */
 			$this->setAndSaveAttribute('deleted', !$this->deleted);
 		} else {
 			$this->delete();
@@ -220,21 +211,35 @@ trait ARExtended {
 	}
 
 	/**
+	 * Удаляет набор моделей по набору первичных ключей
+	 * @param array $primaryKeys
+	 * @throws Throwable
+	 */
+	public static function deleteByKeys(array $primaryKeys):void {
+		foreach ($primaryKeys as $primaryKey) {
+			if (null !== $model = self::findModel($primaryKey)) {
+				$model->delete();
+			}
+		}
+	}
+
+	/**
 	 * Метод создания модели, выполняющий дополнительную обработку:
-	 * 1) Обеспечивает последовательное создание модели и заполнение данных по связям (т.е. тех данных, которые не могут быть заполнены до фактического создания модели).
+	 *    Обеспечивает последовательное создание модели и заполнение данных по связям (т.е. тех данных, которые не могут быть заполнены до фактического создания модели).
 	 *    Последовательность заключена в транзакцию - сбой на любом шаге ведёт к отмене всей операции.
-	 * 2) Генерирует уведомление по результатам
 	 *
 	 * Значения по умолчанию больше не учитываются методом, предполагается, что они заданы в rules().
 	 * Если требуется выполнить какую-то логику в процессе создания - используем стандартные методы, вроде beforeValidate/beforeSave (по ситуации).
 	 *
 	 * @param array|null $paramsArray - массив параметров БЕЗ учёта имени модели в форме (я забыл, почему сделал так, но, видимо, причина была)
-	 * @param bool $alerts -- false отключит создание алертов (полезно при импортах)
 	 * @return bool - результат операции
+	 * @throws Exception
+	 * @noinspection PhpUndefinedMethodInspection -- нужно из-за структуры кода, трейт не знает, что скрывается за static
 	 */
-	public function createModel(?array $paramsArray, bool $alerts = true):bool {
+	public function createModel(?array $paramsArray):bool {
 		$saved = false;
 		if ($this->loadArray($paramsArray)) {
+			/** @var Transaction $transaction */
 			$transaction = static::getDb()->beginTransaction();
 			if (true === $saved = $this->save()) {
 				$this->refresh();//переподгрузим атрибуты
@@ -243,11 +248,9 @@ trait ARExtended {
 				if (true === $saved = $this->save()) {
 					$transaction->commit();
 					$this->refresh();
-					if ($alerts) AlertModel::SuccessNotify();
 				}
 			}
 			if (!$saved) {
-				if ($alerts) AlertModel::ErrorsNotify($this->errors);
 				$transaction->rollBack();
 			}
 		}
@@ -255,19 +258,14 @@ trait ARExtended {
 	}
 
 	/**
-	 * Метод обновления модели, выполняющий дополнительную обработку: генерация уведомления по результатам
+	 * Метод обновления модели, выполняющий дополнительную обработку
 	 * @param array|null $paramsArray - массив параметров БЕЗ учёта имени модели в форме (я забыл, почему сделал так, но, видимо, причина была)
 	 * @return bool
+	 *
+	 * Раньше здесь была логика оповещений, после её удаления метод свёлся к текущему состоянию
+	 * @throws Exception
 	 */
 	public function updateModel(?array $paramsArray):bool {
-		if ($this->loadArray($paramsArray)) {
-			if ($this->save()) {
-				AlertModel::SuccessNotify();
-				$this->refresh();
-				return true;
-			}
-			AlertModel::ErrorsNotify($this->errors);
-		}
-		return false;
+		return $this->createModel($paramsArray);
 	}
 }

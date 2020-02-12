@@ -3,8 +3,8 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\traits;
 
+use pozitronik\helpers\PathHelper;
 use Yii;
-use app\helpers\PathHelper;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\web\UploadedFile;

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\core\core_module;
+namespace pozitronik\core\models\core_module;
 
 use Throwable;
 use yii\base\InvalidConfigException;

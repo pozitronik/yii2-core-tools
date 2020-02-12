@@ -1,12 +1,12 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\core\core_module;
+namespace pozitronik\core\models\core_module;
 
+use pozitronik\core\interfaces\access\UserRightInterface;
 use pozitronik\helpers\ArrayHelper;
-use app\helpers\Utils;
-use app\modules\privileges\models\UserRightInterface;
 use pozitronik\helpers\ReflectionHelper;
+use pozitronik\helpers\Utils;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Throwable;
@@ -18,7 +18,6 @@ use yii\helpers\Url;
 
 /**
  * Class CoreModule
- * @package app\models\core\core_module
  *
  * @property-read string $name
  * @property-read string $namespace
