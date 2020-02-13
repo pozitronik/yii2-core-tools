@@ -4,8 +4,8 @@ declare(strict_types = 1);
 namespace pozitronik\core\models\core_controller;
 
 use pozitronik\core\models\core_module\PluginsSupport;
+use pozitronik\core\traits\ModelExtended;
 use pozitronik\helpers\ArrayHelper;
-use app\models\core\traits\ModelExtended;
 use app\modules\privileges\models\UserAccess;
 use pozitronik\helpers\ReflectionHelper;
 use RecursiveDirectoryIterator;
