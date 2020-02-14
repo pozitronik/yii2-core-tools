@@ -32,11 +32,5 @@
 		"psr-4": {
 			"pozitronik\\core\\": "src"
 		}
-	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/pozitronik/yii2-helpers"
-		}
-	]
+	}
 }
