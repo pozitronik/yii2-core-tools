@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\models\core_controller;
 
-use pozitronik\core\models\core_controller\CoreController;
 
 /**
  * Class WigetableController

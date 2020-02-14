@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\models\sys_exceptions;
 
+use pozitronik\core\models\lcquery\LCQuery;
 use pozitronik\core\traits\ARExtended;
 use pozitronik\helpers\Utils;
 use Yii;
