@@ -4,9 +4,7 @@ declare(strict_types = 1);
 namespace pozitronik\core\models\core_controller;
 
 use pozitronik\core\models\core_module\PluginsSupport;
-use pozitronik\core\traits\ModelExtended;
 use pozitronik\helpers\ArrayHelper;
-use app\modules\privileges\models\UserAccess;
 use pozitronik\helpers\ReflectionHelper;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -15,51 +13,12 @@ use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\UnknownClassException;
-use yii\filters\AccessControl;
-use yii\filters\ContentNegotiator;
 use yii\web\Controller;
-use yii\web\ErrorAction;
-use yii\web\Response;
 
 /**
- * Базовая модель веб-контроллера приложения
- * Class CoreController
- * @package app\models\core
+ * Трейт для аугментации контроллеров
  */
-class CoreController extends Controller {
-	use ModelExtended;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function behaviors():array {
-		return [
-			[
-				'class' => ContentNegotiator::class,
-				'formats' => [
-					'application/json' => Response::FORMAT_JSON,
-					'application/xml' => Response::FORMAT_XML,
-					'text/html' => Response::FORMAT_HTML
-				]
-			],
-			'access' => [
-				'class' => AccessControl::class,
-				'rules' => UserAccess::getUserAccessRules($this)
-			]
-		];
-	}
-
-	/**
-	 * @return array
-	 */
-	public function actions():array {
-		return [
-			'error' => [
-				'class' => ErrorAction::class
-			]
-		];
-	}
-
+trait ControllerTrait {
 	/**
 	 * Возвращает все экшены контроллера
 	 * @param Controller $controllerClass
@@ -158,5 +117,4 @@ class CoreController extends Controller {
 		}
 		return $result;
 	}
-
 }
