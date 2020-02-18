@@ -89,11 +89,4 @@ class LCQuery extends ActiveQuery {
 		}, $duration);
 	}
 
-	/**
-	 * Применяется для SysExceptions - там флагом known помечаются известные (малокритичные) ошибки
-	 * @return $this
-	 */
-	public function unknown():self {
-		return $this->andOnCondition(['known' => false]);
-	}
 }
