@@ -7,27 +7,16 @@ Installation
 
 The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
-Add
+Run
 
 ```
-{
-	"type": "vcs",
-	"url": "https://github.com/pozitronik/yii2-core-tools"
-} 
-```
-
-to the repositories section of your `composer.json` file.
-
-Either run
-
-```
-php composer.phar require --prefer-dist pozitronik/yii2-core-tools "*"
+php composer.phar require pozitronik/yii2-core-tools "dev-master"
 ```
 
 or add
 
 ```
-"pozitronik/yii2-core-tools": "*"
+"pozitronik/yii2-core-tools": "dev-master"
 ```
 
 to the require section of your `composer.json` file.
