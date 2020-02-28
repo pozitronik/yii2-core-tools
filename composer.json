@@ -15,7 +15,7 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"pozitronik/yii2-helpers": "dev-master"
+		"pozitronik/yii2-helpers": "*"
 	},
 	"suggest": {
 		"pozitronik/yii2-exceptionslogger": "Allows more advanced exceptions logging"
