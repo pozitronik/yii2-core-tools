@@ -18,16 +18,6 @@
 		"pozitronik/yii2-helpers": "dev-master",
 		"pozitronik/yii2-exceptionslogger": "dev-master"
 	},
-	"repositories": [
-		{
-			"type": "vcs",
-			"url": "https://github.com/pozitronik/yii2-helpers"
-		},
-		{
-			"type": "vcs",
-			"url": "https://github.com/pozitronik/yii2-exceptionslogger"
-		}
-	],
 	"autoload": {
 		"psr-4": {
 			"pozitronik\\core\\": "src"
