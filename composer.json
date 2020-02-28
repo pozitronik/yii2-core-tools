@@ -15,8 +15,10 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
-		"pozitronik/yii2-helpers": "dev-master",
-		"pozitronik/yii2-exceptionslogger": "dev-master"
+		"pozitronik/yii2-helpers": "dev-master"
+	},
+	"suggest": {
+		"pozitronik/yii2-exceptionslogger": "Allows more advanced exceptions logging"
 	},
 	"autoload": {
 		"psr-4": {

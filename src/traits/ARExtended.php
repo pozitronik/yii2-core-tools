@@ -32,7 +32,13 @@ trait ARExtended {
 	 */
 	public static function findModel($id, ?Throwable $throw = null):?self {
 		if (null !== ($model = static::findOne($id))) return $model;
-		if (null !== $throw) SysExceptions::log($throw, true, true);
+		if (null !== $throw) {
+			if (class_exists(SysExceptions::class)) {
+				SysExceptions::log($throw, true, true);
+			} else {
+				throw $throw;
+			}
+		}
 		return null;
 	}
 
