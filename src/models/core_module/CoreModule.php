@@ -14,7 +14,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Module as BaseModule;
 use yii\helpers\Html;
-use yii\helpers\Url;
 
 /**
  * Class CoreModule
@@ -126,7 +125,7 @@ class CoreModule extends BaseModule implements CoreModuleInterface {
 			$url = Utils::setAbsoluteUrl($module->defaultRoute.Utils::setAbsoluteUrl($url));
 		}
 
-		return Url::to($url);
+		return Yii::$app->urlManager->createUrl($url);
 	}
 
 	/**
