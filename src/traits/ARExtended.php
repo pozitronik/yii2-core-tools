@@ -238,11 +238,12 @@ trait ARExtended {
 	 * Если требуется выполнить какую-то логику в процессе создания - используем стандартные методы, вроде beforeValidate/beforeSave (по ситуации).
 	 *
 	 * @param array|null $paramsArray - массив параметров БЕЗ учёта имени модели в форме (я забыл, почему сделал так, но, видимо, причина была)
+	 * @param array $mappedParams - массив с параметрами для реляционных атрибутов в формате 'имя атрибута' => массив значений
 	 * @return bool - результат операции
 	 * @throws Exception
 	 * @noinspection PhpUndefinedMethodInspection -- нужно из-за структуры кода, трейт не знает, что скрывается за static
 	 */
-	public function createModel(?array $paramsArray):bool {
+	public function createModel(?array $paramsArray, array $mappedParams = []):bool {
 		$saved = false;
 		if ($this->loadArray($paramsArray)) {
 			/** @var Transaction $transaction */
@@ -250,6 +251,11 @@ trait ARExtended {
 			if (true === $saved = $this->save()) {
 				$this->refresh();//переподгрузим атрибуты
 				$this->loadArray(ArrayHelper::diff_keys($this->attributes, $paramsArray));/*Возьмём разницу атрибутов и массива параметров - в нем будут новые атрибуты, которые теперь можно заполнить*/
+				foreach ($mappedParams as $paramName => $paramArray) {//дополнительные атрибуты в формате 'имя атрибута' => $paramsArray
+					if ($this->hasProperty($paramName) && $this->canSetProperty($paramName) && !empty($paramArray)) {
+						$this->$paramName = $paramArray;
+					}
+				}
 				/** @noinspection NotOptimalIfConditionsInspection */
 				if (true === $saved = $this->save()) {
 					$transaction->commit();
@@ -266,12 +272,13 @@ trait ARExtended {
 	/**
 	 * Метод обновления модели, выполняющий дополнительную обработку
 	 * @param array|null $paramsArray - массив параметров БЕЗ учёта имени модели в форме (я забыл, почему сделал так, но, видимо, причина была)
+	 * @param array $mappedParams @see createModel $mappedParams
 	 * @return bool
 	 *
 	 * Раньше здесь была логика оповещений, после её удаления метод свёлся к текущему состоянию
 	 * @throws Exception
 	 */
-	public function updateModel(?array $paramsArray):bool {
-		return $this->createModel($paramsArray);
+	public function updateModel(?array $paramsArray, array $mappedParams = []):bool {
+		return $this->createModel($paramsArray, $mappedParams);
 	}
 }
