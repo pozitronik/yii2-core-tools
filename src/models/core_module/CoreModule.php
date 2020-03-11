@@ -31,7 +31,6 @@ class CoreModule extends BaseModule implements CoreModuleInterface {
 	 */
 	public function __construct(string $id, $parent = null, array $config = []) {
 		parent::__construct($id, $parent, $config);
-		$this->defaultRoute = $this->id;
 	}
 
 	/**
