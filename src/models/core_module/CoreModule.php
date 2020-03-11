@@ -119,11 +119,10 @@ class CoreModule extends BaseModule implements CoreModuleInterface {
 		if ((null === $module = static::getInstance()) && null === $module = PluginsSupport::GetPluginByClassName(static::class)) {
 			throw new InvalidConfigException("Модуль ".static::class." не подключён");
 		}
-		if ('' === $route) {
-			$route = Utils::setAbsoluteUrl($module->defaultRoute);
-		} elseif (is_array($route)) {/* ['controller{/action}', 'actionParam' => $paramValue */
+		if (is_array($route)) {/* ['controller{/action}', 'actionParam' => $paramValue */
 			ArrayHelper::setValue($route, 0, Utils::setAbsoluteUrl($module->id.Utils::setAbsoluteUrl(ArrayHelper::getValue($route, 0))));
 		} else {/* 'controller{/action}' */
+			if ('' === $route) $route = $module->defaultRoute;
 			$route = Utils::setAbsoluteUrl($module->id.Utils::setAbsoluteUrl($route));
 		}
 		return Url::to($route);
