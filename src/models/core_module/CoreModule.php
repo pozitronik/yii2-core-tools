@@ -94,16 +94,16 @@ class CoreModule extends BaseModule implements CoreModuleInterface {
 	/**
 	 * Функция генерирует пункт меню навигации внутри модуля
 	 * @param string $label
-	 * @param string|array $url
+	 * @param string|array $uroute
 	 * @return array
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 */
-	public static function breadcrumbItem(string $label, $url = ''):array {
+	public static function breadcrumbItem(string $label, $uroute = ''):array {
 		if ((null === $module = static::getInstance()) && null === $module = PluginsSupport::GetPluginByClassName(static::class)) {
 			$module = Yii::$app->controller->module;
 		}
-		return ['label' => $label, 'url' => $module::to($url)];
+		return ['label' => $label, 'url' => $module::to($uroute)];
 	}
 
 	/**
