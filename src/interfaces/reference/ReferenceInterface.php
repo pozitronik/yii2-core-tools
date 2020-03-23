@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\interfaces\reference;
 
+use yii\data\DataProviderInterface;
 use yii\db\ActiveQuery;
 
 /**
@@ -18,6 +19,7 @@ use yii\db\ActiveQuery;
  * @property-read string $title
  * @property-read integer $usedCount
  * @property-read array $searchSort
+ * @property-read DataProviderInterface|null $dataProvider
  */
 interface ReferenceInterface {//todo: добавить миграцию на индексы color/textcolor всем справочникам
 
@@ -94,4 +96,10 @@ interface ReferenceInterface {//todo: добавить миграцию на и�
 	 * @return array
 	 */
 	public static function dataOptions():array;
+
+	/**
+	 * Если справочнику нужно переопределить дефолтный dataProvider
+	 * @return DataProviderInterface|null
+	 */
+	public function getDataProvider():?DataProviderInterface;
 }
