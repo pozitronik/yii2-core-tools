@@ -15,7 +15,8 @@ use yii\db\ActiveQuery;
  * @property-read string $ref_name
  * @property-read array $columns
  * @property-read array $view_columns
- * @property-read string $form
+ * @property-read string|false $form
+ * @property-read string|false $indexForm
  * @property-read string $title
  * @property-read integer $usedCount
  * @property-read array $searchSort
@@ -47,6 +48,11 @@ interface ReferenceInterface {//todo: добавить миграцию на и�
 	 * @return string|false
 	 */
 	public function getForm():string;
+	/**
+	 * Если в справочнике требуется отобразить полностью собственныую главную страницу, то функция возвращает путь к встраиваемой вьюхе, иначе к дефолтной
+	 * @return string|false
+	 */
+	public function getIndexForm():string;
 
 	/**
 	 * Возвращает id раширения, добавившего справочник (null, если справочник базовый)
