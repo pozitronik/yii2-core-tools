@@ -108,13 +108,13 @@ trait ARExtended {
 	 * @throws Exception
 	 * @throws InvalidConfigException
 	 */
-	public static function addInstance(array $searchCondition, ?array $fields = null, bool $ignoreEmptyCondition = true, bool $forceUpdate = false):?self {
+	public static function addInstance(array $searchCondition, ?array $fields = null, bool $ignoreEmptyCondition = true, bool $forceUpdate = false, bool $throwOnError = true):?self {
 		if ($ignoreEmptyCondition && (empty($searchCondition) || (is_array($searchCondition) && empty(reset($searchCondition))))) return null;
 
 		$instance = static::getInstance($searchCondition);
 		if ($instance->isNewRecord || $forceUpdate) {
 			$instance->loadArray($fields??$searchCondition);
-			if (!$instance->save()) {
+			if (!$instance->save() && $throwOnError) {
 				throw new Exception("{$instance->formName()} errors: ".VarDumper::dumpAsString($instance->errors));
 			}
 		}
