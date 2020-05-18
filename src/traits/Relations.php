@@ -48,10 +48,12 @@ trait Relations {
 	 * Линкует в этом релейшене две модели. Модели могут быть заданы как через айдишники, так и напрямую, в виде массивов или так.
 	 * @param int|int[]|string|string[]|Model|Model[] $master
 	 * @param int|int[]|string|string[]|Model|Model[] $slave
+	 * @param bool $relink связи будут установлены заново
 	 * @throws Throwable
 	 */
-	public static function linkModels($master, $slave):void {
+	public static function linkModels($master, $slave, bool $relink = false):void {
 		if (empty($master) || empty($slave)) return;
+		if ($relink) self::clearLinks($master);
 		if (is_array($master)) {
 			foreach ($master as $master_item) {
 				if (is_array($slave)) {
@@ -121,6 +123,28 @@ trait Relations {
 				self::unlinkModel($master, $slave_item);
 			}
 		} else self::unlinkModel($master, $slave);
+	}
 
+	/**
+	 * Удаляет все связи от модели в этом релейшене
+	 * @param int|int[]|string|string[]|Model|Model[] $master
+	 * @throws Throwable
+	 */
+	public static function clearLinks($master) {
+		if (empty($master)) return;
+		$link = new self();
+		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
+
+		if (is_array($master)) {
+			foreach ($master as $item) self::clearLinks($item);
+		}
+
+		if (is_numeric($master)) {
+			$master = (int)$master;
+		} elseif (is_object($master)) {
+			$master = ArrayHelper::getValue($master, 'primaryKey', new Exception("Класс {$master->formName()} не имеет атрибута primaryKey"));
+		} else $master = (string)$master; //suppose it string field name
+
+		self::deleteAll([$first_name => $master]);
 	}
 }
