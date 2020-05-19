@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpUndefinedClassInspection */
+/** @noinspection PhpUndefinedNamespaceInspection */
 declare(strict_types = 1);
 
 namespace pozitronik\core\traits;
@@ -10,6 +12,7 @@ use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use Throwable;
+use yii\db\Exception as DbException;
 use yii\db\Transaction;
 use yii\helpers\VarDumper;
 
@@ -92,7 +95,6 @@ trait ARExtended {
 	 * @return ActiveRecord|self
 	 */
 	public static function getInstance($searchCondition):self {
-		/** @noinspection PhpUndefinedMethodInspection */
 		$instance = static::find()->where($searchCondition)->one();
 		return $instance??new static;
 	}
@@ -104,6 +106,7 @@ trait ARExtended {
 	 * @param null|array $fields
 	 * @param bool $ignoreEmptyCondition Игнорировать пустое поисковое значение
 	 * @param bool $forceUpdate Если запись по условию найдена, пытаться обновить её
+	 * @param bool $throwOnError
 	 * @return ActiveRecord|self|null
 	 * @throws Exception
 	 * @throws InvalidConfigException
@@ -240,8 +243,8 @@ trait ARExtended {
 	 * @param array|null $paramsArray - массив параметров БЕЗ учёта имени модели в форме (я забыл, почему сделал так, но, видимо, причина была)
 	 * @param array $mappedParams - массив с параметрами для реляционных атрибутов в формате 'имя атрибута' => массив значений
 	 * @return bool - результат операции
-	 * @throws Exception
-	 * @noinspection PhpUndefinedMethodInspection -- нужно из-за структуры кода, трейт не знает, что скрывается за static
+	 * @throws Throwable
+	 * @throws DbException
 	 */
 	public function createModel(?array $paramsArray, array $mappedParams = []):bool {
 		$saved = false;
@@ -250,19 +253,27 @@ trait ARExtended {
 			$transaction = static::getDb()->beginTransaction();
 			if (true === $saved = $this->save()) {
 				$this->refresh();//переподгрузим атрибуты
-				$this->loadArray(ArrayHelper::diff_keys($this->attributes, $paramsArray));/*Возьмём разницу атрибутов и массива параметров - в нем будут новые атрибуты, которые теперь можно заполнить*/
-				foreach ($mappedParams as $paramName => $paramArray) {//дополнительные атрибуты в формате 'имя атрибута' => $paramsArray
-					if ($this->hasProperty($paramName) && $this->canSetProperty($paramName) && !empty($paramArray)) {
-						$this->$paramName = $paramArray;
-					}
+				/*Возьмём разницу атрибутов и массива параметров - в нем будут новые атрибуты, которые теперь можно заполнить*/
+				$relatedParameters = [];
+				foreach ($paramsArray as $item => $value) {//вычисляем связанные параметры, которые не могли быть сохранены до сохранения основной модели
+					/** @noinspection TypeUnsafeComparisonInspection */
+					if ($value != ArrayHelper::getValue($this->attributes, $item)) $relatedParameters[$item] = $value;//строгое сравнение тут не нужно
 				}
-				/** @noinspection NotOptimalIfConditionsInspection */
-				if (true === $saved = $this->save()) {
-					$transaction->commit();
+				$mappedParams = array_merge($mappedParams, $relatedParameters);
+
+				if ([] !== $mappedParams) {//если было, что сохранять - сохраним
+					foreach ($mappedParams as $paramName => $paramArray) {//дополнительные атрибуты в формате 'имя атрибута' => $paramsArray
+						if ($this->hasProperty($paramName) && $this->canSetProperty($paramName) && !empty($paramArray)) {
+							$this->$paramName = $paramArray;
+						}
+					}
+					$saved = $this->save();
 					$this->refresh();
 				}
 			}
-			if (!$saved) {
+			if ($saved) {
+				$transaction->commit();
+			} else {
 				$transaction->rollBack();
 			}
 		}
@@ -276,7 +287,9 @@ trait ARExtended {
 	 * @return bool
 	 *
 	 * Раньше здесь была логика оповещений, после её удаления метод свёлся к текущему состоянию
+	 * @throws DbException
 	 * @throws Exception
+	 * @throws Throwable
 	 */
 	public function updateModel(?array $paramsArray, array $mappedParams = []):bool {
 		return $this->createModel($paramsArray, $mappedParams);
