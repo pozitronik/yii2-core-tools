@@ -52,8 +52,9 @@ trait Relations {
 	 * @throws Throwable
 	 */
 	public static function linkModels($master, $slave, bool $relink = false):void {
-		if (empty($master) || empty($slave)) return;
+		if (empty($master)) return;
 		if ($relink) self::clearLinks($master);
+		if (empty($slave)) return;
 		if (is_array($master)) {
 			foreach ($master as $master_item) {
 				if (is_array($slave)) {
