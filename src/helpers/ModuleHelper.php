@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace models\core_module;
+namespace pozitronik\core\helpers;
 
 use Throwable;
 use Yii;
@@ -53,7 +53,7 @@ class ModuleHelper {
 	}
 
 	/**
-	 * Возвращает модул по его id
+	 * Возвращает модуль по его id
 	 * @param string $moduleId
 	 * @return Module|null
 	 * @throws InvalidConfigException
@@ -64,7 +64,7 @@ class ModuleHelper {
 	}
 
 	/**
-	 * Возвращает модул по его имени класса
+	 * Возвращает модуль по его имени класса
 	 * @param string $className
 	 * @return Module|null
 	 * @throws InvalidConfigException
@@ -112,4 +112,5 @@ class ModuleHelper {
 		}
 		return [];
 	}
+
 }
