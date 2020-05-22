@@ -1,7 +1,7 @@
 <?php
 declare(strict_types = 1);
 
-namespace models;
+namespace pozitronik\core\models;
 
 use pozitronik\core\traits\ActiveQueryExtended;
 use yii\db\ActiveQuery;

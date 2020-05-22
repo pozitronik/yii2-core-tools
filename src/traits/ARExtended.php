@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\traits;
 
-use models\LCQuery;
+use pozitronik\core\models\LCQuery;
 use pozitronik\sys_exceptions\SysExceptions;
 use pozitronik\helpers\ArrayHelper;
 use RuntimeException;
