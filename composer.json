@@ -18,7 +18,7 @@
 		"pozitronik/yii2-helpers": "*"
 	},
 	"require-dev": {
-		"yiisoft/yii2": "*"
+		"yiisoft/yii2": "dev-master"
 	},
 	"suggest": {
 		"pozitronik/yii2-exceptionslogger": "Allows more advanced exceptions logging"
