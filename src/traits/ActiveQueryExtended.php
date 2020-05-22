@@ -13,7 +13,6 @@ use yii\db\ActiveRecord;
 use yii\db\Command;
 use yii\db\Connection;
 use yii\db\ExpressionInterface;
-use yii\db\QueryTrait;
 
 /**
  * Обёртка над ActiveQuery с полезными и общеупотребительными функциями
@@ -21,7 +20,6 @@ use yii\db\QueryTrait;
  */
 trait ActiveQueryExtended {
 	use ActiveQueryTrait;
-	use QueryTrait;
 
 	/**
 	 * Глобальная замена findWorkOnly
