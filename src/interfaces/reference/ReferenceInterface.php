@@ -8,6 +8,8 @@ use yii\db\ActiveQuery;
 
 /**
  * Интерфейс справочника
+ * @todo: move to yii2-reference package
+ *
  * @package app\models\references
  * @property integer id
  * @property string name
