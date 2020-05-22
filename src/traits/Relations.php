@@ -52,7 +52,7 @@ trait Relations {
 	 * @param bool $relink связи будут установлены заново
 	 * @throws Throwable
 	 */
-	public static function linkActiveRecords($master, $slave, bool $relink = false):void {
+	public static function linkModels($master, $slave, bool $relink = false):void {
 		if (empty($master)) return;
 		if ($relink) self::clearLinks($master);
 		if (empty($slave)) return;
@@ -111,7 +111,7 @@ trait Relations {
 	 *
 	 * Передавать массивы строк/идентификаторов нельзя (только массив моделей)
 	 */
-	public static function unlinkActiveRecords($master, $slave):void {
+	public static function unlinkModels($master, $slave):void {
 		if (empty($master) || empty($slave)) return;
 		if (is_array($master)) {
 			foreach ($master as $master_item) {
