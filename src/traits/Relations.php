@@ -96,7 +96,7 @@ trait Relations {
 			$slave = ArrayHelper::getValue($slave, 'primaryKey', new Exception("Класс {$slave->formName()} не имеет атрибута primaryKey"));
 		} else $slave = (string)$slave; //suppose it string field name
 
-		self::deleteAll([$first_name => $master, $second_name => $slave]);
+		static::deleteAll([$first_name => $master, $second_name => $slave]);
 	}
 
 	/**
@@ -133,7 +133,7 @@ trait Relations {
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $master
 	 * @throws Throwable
 	 */
-	public static function clearLinks($master) {
+	public static function clearLinks($master):void {
 		if (empty($master)) return;
 		/** @var ActiveRecord $link */
 		$link = new self();
@@ -149,6 +149,14 @@ trait Relations {
 			$master = ArrayHelper::getValue($master, 'primaryKey', new Exception("Класс {$master->formName()} не имеет атрибута primaryKey"));
 		} else $master = (string)$master; //suppose it string field name
 
-		self::deleteAll([$first_name => $master]);
+		static::deleteAll([$first_name => $master]);
 	}
+
+	/**
+	 * @param null $condition
+	 * @param array $params
+	 * @return int
+	 * @see ActiveRecord::deleteAll()
+	 */
+	abstract public static function deleteAll($condition = null, $params = []):int;
 }
