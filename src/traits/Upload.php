@@ -41,5 +41,8 @@ trait Upload {
 		return null;
 	}
 
+	/**
+	 * @see Model::formName()
+	 */
 	abstract public function formName():string;
 }
