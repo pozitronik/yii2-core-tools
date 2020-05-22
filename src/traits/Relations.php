@@ -21,7 +21,7 @@ trait Relations {
 	 * @param ActiveRecord|int|string $slave
 	 * @throws Throwable
 	 */
-	public static function linkActiveRecord($master, $slave):void {
+	public static function linkModel($master, $slave):void {
 		if (empty($master) || empty($slave)) return;
 
 		/** @var ActiveRecord $link */
@@ -60,15 +60,15 @@ trait Relations {
 			foreach ($master as $master_item) {
 				if (is_array($slave)) {
 					foreach ($slave as $slave_item) {
-						self::linkActiveRecord($master_item, $slave_item);
+						self::linkModel($master_item, $slave_item);
 					}
-				} else self::linkActiveRecord($master_item, $slave);
+				} else self::linkModel($master_item, $slave);
 			}
 		} else if (is_array($slave)) {
 			foreach ($slave as $slave_item) {
-				self::linkActiveRecord($master, $slave_item);
+				self::linkModel($master, $slave_item);
 			}
-		} else self::linkActiveRecord($master, $slave);
+		} else self::linkModel($master, $slave);
 	}
 
 	/**
@@ -77,7 +77,7 @@ trait Relations {
 	 * @param ActiveRecord|int|string $slave
 	 * @throws Throwable
 	 */
-	public static function unlinkActiveRecord($master, $slave):void {
+	public static function unlinkModel($master, $slave):void {
 		if (empty($master) || empty($slave)) return;
 		/** @var ActiveRecord $link */
 		$link = new self();
@@ -117,15 +117,15 @@ trait Relations {
 			foreach ($master as $master_item) {
 				if (is_array($slave)) {
 					foreach ($slave as $slave_item) {
-						self::unlinkActiveRecord($master_item, $slave_item);
+						self::unlinkModel($master_item, $slave_item);
 					}
-				} else self::unlinkActiveRecord($master_item, $slave);
+				} else self::unlinkModel($master_item, $slave);
 			}
 		} else if (is_array($slave)) {
 			foreach ($slave as $slave_item) {
-				self::unlinkActiveRecord($master, $slave_item);
+				self::unlinkModel($master, $slave_item);
 			}
-		} else self::unlinkActiveRecord($master, $slave);
+		} else self::unlinkModel($master, $slave);
 	}
 
 	/**
