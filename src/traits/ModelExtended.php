@@ -3,7 +3,6 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\traits;
 
-use yii\base\Model;
 
 /**
  * Trait ModelExtended
@@ -19,7 +18,15 @@ trait ModelExtended {
 	 * @return mixed|null
 	 */
 	public function getPropertyValue(string $propertyName, $default = null) {
-		/** @var Model $this */
 		return $this->hasProperty($propertyName)?$this->$propertyName:$default;
 	}
+
+	/**
+	 * @param string $name
+	 * @param bool $checkVars
+	 * @param bool $checkBehaviors
+	 * @return bool
+	 * @see Model::hasProperty()
+	 */
+	abstract public function hasProperty(string $name, bool $checkVars = true, bool $checkBehaviors = true):bool;
 }
