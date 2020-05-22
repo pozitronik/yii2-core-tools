@@ -8,6 +8,7 @@ use yii\db\ActiveQuery;
 use Yii;
 use pozitronik\helpers\ArrayHelper;
 use Throwable;
+use yii\db\ActiveQueryTrait;
 use yii\db\ActiveRecord;
 use yii\db\Command;
 use yii\db\Connection;
@@ -17,10 +18,10 @@ use yii\db\QueryTrait;
 /**
  * Обёртка над ActiveQuery с полезными и общеупотребительными функциями
  * http://www.yiiframework.com/doc-2.0/guide-db-active-record.html#customizing-query-classes
- *
- * @property string $modelClass see ActiveQueryTrait::$modelClass
  */
 trait ActiveQueryExtended {
+	use ActiveQueryTrait;
+	use QueryTrait;
 
 	/**
 	 * Глобальная замена findWorkOnly
@@ -107,13 +108,6 @@ trait ActiveQueryExtended {
 	 * @see ActiveQuery::andOnCondition()
 	 */
 	abstract public function andOnCondition($condition, array $params = []):self;
-
-	/**
-	 * @param array $condition
-	 * @return self
-	 * @see QueryTrait::andFilterWhere()
-	 */
-	abstract public function andFilterWhere(array $condition):self;
 
 	/**
 	 * @param bool $value
