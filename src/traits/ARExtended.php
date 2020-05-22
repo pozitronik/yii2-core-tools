@@ -11,8 +11,6 @@ use pozitronik\helpers\ArrayHelper;
 use RuntimeException;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
-use yii\caching\TagDependency;
-use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
 use Throwable;
 use yii\db\Exception as DbException;
