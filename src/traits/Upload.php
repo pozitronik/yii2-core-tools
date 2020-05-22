@@ -5,7 +5,6 @@ namespace pozitronik\core\traits;
 
 use pozitronik\helpers\PathHelper;
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\web\UploadedFile;
 
@@ -25,7 +24,6 @@ trait Upload {
 	 * @param string $instanceName Параметр для переопределения имени инпута при необходимости
 	 * @param int|null $returnPart Возвращаемый элемент имени (как в pathinfo)
 	 * @return string|null
-	 * @throws InvalidConfigException
 	 */
 	public function uploadFile(?string $saveDirAlias = null, ?string $newFileName = null, ?string $newFileExtension = null, string $instanceName = 'uploadFileInstance', ?int $returnPart = null):?string {
 		$saveDir = Yii::getAlias($saveDirAlias??"@app/web/uploads/{$this->formName()}");
