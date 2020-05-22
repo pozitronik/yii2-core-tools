@@ -1,9 +1,9 @@
 <?php
 declare(strict_types = 1);
 
-namespace pozitronik\core\models\core_controller;
+namespace pozitronik\core\traits;
 
-use pozitronik\core\models\core_module\PluginsSupport;
+use pozitronik\core\helpers\ModuleHelper;
 use pozitronik\helpers\ArrayHelper;
 use pozitronik\helpers\ReflectionHelper;
 use RecursiveDirectoryIterator;
@@ -72,7 +72,7 @@ trait ControllerTrait {
 			if (null === $moduleId) {
 				$module = Yii::$app;
 			} else {
-				$module = PluginsSupport::GetPluginById($moduleId);
+				$module = ModuleHelper::GetModuleById($moduleId);
 				if (null === $module) throw new InvalidConfigException("Module $moduleId not found or plugin not configured properly.");
 			}
 			return new $className(self::ExtractControllerId($className), $module);
@@ -90,7 +90,7 @@ trait ControllerTrait {
 	 * @throws Throwable
 	 */
 	public static function GetControllerByControllerId(string $controllerId, ?string $moduleId):?object {
-		if (null === $plugin = PluginsSupport::GetPluginById($moduleId)) throw new InvalidConfigException("Module $moduleId not found or plugin not configured properly.");
+		if (null === $plugin = ModuleHelper::GetModuleById($moduleId)) throw new InvalidConfigException("Module $moduleId not found or plugin not configured properly.");
 		$controllerId = implode('', array_map('ucfirst', preg_split('/-/', $controllerId, -1, PREG_SPLIT_NO_EMPTY)));
 		return self::LoadControllerClassFromFile("{$plugin->controllerPath}/{$controllerId}Controller.php", $moduleId);
 
