@@ -28,7 +28,6 @@ trait Upload {
 	 * @throws InvalidConfigException
 	 */
 	public function uploadFile(?string $saveDirAlias = null, ?string $newFileName = null, ?string $newFileExtension = null, string $instanceName = 'uploadFileInstance', ?int $returnPart = null):?string {
-		/** @var Model $this */
 		$saveDir = Yii::getAlias($saveDirAlias??"@app/web/uploads/{$this->formName()}");
 		/** @var Model $this */
 		if ((null !== $uploadFileInstance = UploadedFile::getInstance($this, $instanceName)) && PathHelper::CreateDirIfNotExisted($saveDir)) {
@@ -42,4 +41,5 @@ trait Upload {
 		return null;
 	}
 
+	abstract public function formName():string;
 }
