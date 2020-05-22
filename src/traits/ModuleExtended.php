@@ -109,6 +109,7 @@ trait ModuleExtended {
 	/**
 	 * @return null|static
 	 * @see Module::getInstance()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public static function getInstance():?self;
+	abstract public static function getInstance();
 }

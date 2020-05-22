@@ -157,6 +157,7 @@ trait Relations {
 	 * @param array $params
 	 * @return int
 	 * @see ActiveRecord::deleteAll()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public static function deleteAll($condition = null, $params = []):int;
+	abstract public static function deleteAll($condition = null, $params = []);
 }

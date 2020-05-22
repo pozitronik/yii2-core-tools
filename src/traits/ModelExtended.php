@@ -27,6 +27,7 @@ trait ModelExtended {
 	 * @param bool $checkBehaviors
 	 * @return bool
 	 * @see Model::hasProperty()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public function hasProperty(string $name, bool $checkVars = true, bool $checkBehaviors = true):bool;
+	abstract public function hasProperty($name, $checkVars = true,$checkBehaviors = true);
 }

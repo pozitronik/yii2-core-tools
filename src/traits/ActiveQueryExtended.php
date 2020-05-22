@@ -98,30 +98,34 @@ trait ActiveQueryExtended {
 	 * @param bool $checkBehaviors
 	 * @return bool
 	 * @see Model::hasProperty()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public function hasProperty(string $name, bool $checkVars = true, bool $checkBehaviors = true):bool;
+	abstract public function hasProperty($name, $checkVars = true, $checkBehaviors = true);
 
 	/**
 	 * @param string|array $condition
 	 * @param array $params
 	 * @return self
 	 * @see ActiveQuery::andOnCondition()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public function andOnCondition($condition, array $params = []):self;
+	abstract public function andOnCondition($condition, $params = []);
 
 	/**
 	 * @param bool $value
 	 * @return self
 	 * @see ActiveQuery::distinct()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public function distinct(bool $value = true):self;
+	abstract public function distinct($value = true);
 
 	/**
 	 * @param Connection|null $db
 	 * @return Command
 	 * @see ActiveQuery::createCommand()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public function createCommand(?Connection $db = null):Command;
+	abstract public function createCommand($db = null);
 
 	/**
 	 * @param string $q
@@ -129,20 +133,22 @@ trait ActiveQueryExtended {
 	 * @return int|string
 	 * @see ActiveQuery::count()
 	 */
-	abstract public function count(string $q = '*', ?Connection $db = null);
+	abstract public function count($q = '*', $db = null);
 
 	/**
 	 * @param int|ExpressionInterface|null $limit
 	 * @return self
 	 * @see ActiveQuery::limit()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public function limit($limit):self;
+	abstract public function limit($limit);
 
 	/**
 	 * @param int|ExpressionInterface|null $offset
 	 * @return self
 	 * @see ActiveQuery::offset()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
-	abstract public function offset($offset):self;
+	abstract public function offset($offset);
 
 }
