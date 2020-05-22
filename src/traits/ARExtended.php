@@ -5,11 +5,14 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\traits;
 
+use models\LCQuery;
 use pozitronik\sys_exceptions\SysExceptions;
 use pozitronik\helpers\ArrayHelper;
 use RuntimeException;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\caching\TagDependency;
+use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecord;
 use Throwable;
 use yii\db\Exception as DbException;
@@ -294,4 +297,12 @@ trait ARExtended {
 	public function updateModel(?array $paramsArray, array $mappedParams = []):bool {
 		return $this->createModel($paramsArray, $mappedParams);
 	}
+
+	/**
+	 * @return LCQuery
+	 */
+	public static function find():LCQuery {
+		return new LCQuery(static::class);
+	}
+
 }
