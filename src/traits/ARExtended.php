@@ -195,6 +195,7 @@ trait ARExtended {
 	public function safeDelete():void {
 		if ($this->hasAttribute('deleted')) {
 			$this->setAndSaveAttribute('deleted', !$this->deleted);
+			$this->afterDelete();
 		} else {
 			$this->delete();
 		}
