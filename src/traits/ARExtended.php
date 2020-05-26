@@ -302,4 +302,31 @@ trait ARExtended {
 		return new LCQuery(static::class);
 	}
 
+	/**
+	 * Отличия от базового deleteAll(): работаем в цикле для корректного логирования (через декомпозицию)
+	 * @param null|mixed $condition
+	 * @param bool $transactional
+	 * @return int|null
+	 * @throws DbException
+	 */
+	public static function deleteAllEx($condition = null, $transactional = true):?int {
+		$self_class_name = static::class;
+		/** @var static $self_class */
+		$self_class = new $self_class_name();
+		$deletedModels = $self_class::findAll($condition);
+		$dc = 0;
+		/** @var Transaction $transaction */
+		if ($transactional) $transaction = static::getDb()->beginTransaction();
+		/** @var static[] $deletedModels */
+		foreach ($deletedModels as $deletedModel) {
+			if (false === $deletedCount = $deletedModel->delete()) {
+				$transaction->rollBack();
+				return null;
+			}
+			$dc += $deletedCount;
+		}
+		if ($transactional) $transaction->commit();
+		return $dc;
+	}
+
 }
