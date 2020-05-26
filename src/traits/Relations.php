@@ -96,7 +96,10 @@ trait Relations {
 			$slave = ArrayHelper::getValue($slave, 'primaryKey', new Exception("Класс {$slave->formName()} не имеет атрибута primaryKey"));
 		} else $slave = (string)$slave; //suppose it string field name
 
-		static::deleteAll([$first_name => $master, $second_name => $slave]);
+		if (null !== $model = static::findOne([$first_name => $master, $second_name => $slave])) {
+			/** @var ActiveRecord $model */
+			$model->delete();
+		}
 	}
 
 	/**
@@ -149,15 +152,16 @@ trait Relations {
 			$master = ArrayHelper::getValue($master, 'primaryKey', new Exception("Класс {$master->formName()} не имеет атрибута primaryKey"));
 		} else $master = (string)$master; //suppose it string field name
 
-		static::deleteAll([$first_name => $master]);
+		if (null !== $model = static::findOne([$first_name => $master])) {
+			/** @var ActiveRecord $model */
+			$model->delete();
+		}
 	}
 
 	/**
-	 * @param null $condition
-	 * @param array $params
-	 * @return int
-	 * @see ActiveRecord::deleteAll()
-	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 * @param mixed $condition
+	 * @return static|null
+	 * @see ActiveRecord::findOne()
 	 */
-	abstract public static function deleteAll($condition = null, $params = []);
+	abstract public static function findOne($condition);
 }
