@@ -6,6 +6,7 @@ namespace pozitronik\core\traits;
 use pozitronik\helpers\ArrayHelper;
 use Throwable;
 use yii\base\Exception;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 
 /**
@@ -14,6 +15,19 @@ use yii\db\ActiveRecord;
  * @package app\ActiveRecords\relations
  */
 trait Relations {
+
+	/**
+	 * Преобразует переданный параметр к единому виду
+	 * @param int|string|ActiveRecord $storage
+	 * @return int|string
+	 * @throws Throwable
+	 * @throws InvalidConfigException
+	 */
+	private static function extractKeyValue($storage) {
+		if (is_numeric($storage)) return (int)$storage;
+		if (is_object($storage)) return ArrayHelper::getValue($storage, 'primaryKey', new Exception("Класс {$storage->formName()} не имеет атрибута primaryKey"));
+		return (string)$storage; //suppose it string field name
+	}
 
 	/**
 	 * Линкует в этом релейшене две модели. Модели могут быть заданы как через айдишники, так и моделью, и ещё тупо строкой
@@ -30,17 +44,8 @@ trait Relations {
 		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
 		$second_name = ArrayHelper::getValue($link->rules(), '0.0.1', new Exception('Не удалось получить атрибут для связи'));
 
-		if (is_numeric($master)) {
-			$link->$first_name = (int)$master;
-		} elseif (is_object($master)) {
-			$link->$first_name = ArrayHelper::getValue($master, 'primaryKey', new Exception("Класс {$master->formName()} не имеет атрибута primaryKey"));
-		} else $link->$first_name = (string)$master; //suppose it string field name
-
-		if (is_numeric($slave)) {
-			$link->$second_name = (int)$slave;
-		} elseif (is_object($slave)) {
-			$link->$second_name = ArrayHelper::getValue($slave, 'primaryKey', new Exception("Класс {$slave->formName()} не имеет атрибута primaryKey"));
-		} else $link->$second_name = (string)$slave; //suppose it string field name
+		$link->$first_name = self::extractKeyValue($master);
+		$link->$second_name = self::extractKeyValue($slave);
 
 		$link->save();//save or update, whatever
 	}
@@ -84,19 +89,10 @@ trait Relations {
 		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
 		$second_name = ArrayHelper::getValue($link->rules(), '0.0.1', new Exception('Не удалось получить атрибут для связи'));
 
-		if (is_numeric($master)) {
-			$master = (int)$master;
-		} elseif (is_object($master)) {
-			$master = ArrayHelper::getValue($master, 'primaryKey', new Exception("Класс {$master->formName()} не имеет атрибута primaryKey"));
-		} else $master = (string)$master; //suppose it string field name
+		$masterValue = self::extractKeyValue($master);
+		$slaveValue = self::extractKeyValue($slave);
 
-		if (is_numeric($slave)) {
-			$slave = (int)$slave;
-		} elseif (is_object($slave)) {
-			$slave = ArrayHelper::getValue($slave, 'primaryKey', new Exception("Класс {$slave->formName()} не имеет атрибута primaryKey"));
-		} else $slave = (string)$slave; //suppose it string field name
-
-		if (null !== $model = static::findOne([$first_name => $master, $second_name => $slave])) {
+		if (null !== $model = static::findOne([$first_name => $masterValue, $second_name => $slaveValue])) {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
@@ -146,13 +142,9 @@ trait Relations {
 			foreach ($master as $item) self::clearLinks($item);
 		}
 
-		if (is_numeric($master)) {
-			$master = (int)$master;
-		} elseif (is_object($master)) {
-			$master = ArrayHelper::getValue($master, 'primaryKey', new Exception("Класс {$master->formName()} не имеет атрибута primaryKey"));
-		} else $master = (string)$master; //suppose it string field name
+		$masterValue = self::extractKeyValue($master);
 
-		if (null !== $model = static::findOne([$first_name => $master])) {
+		if (null !== $model = static::findOne([$first_name => $masterValue])) {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
@@ -162,6 +154,7 @@ trait Relations {
 	 * @param mixed $condition
 	 * @return static|null
 	 * @see ActiveRecord::findOne()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	abstract public static function findOne($condition);
 }
