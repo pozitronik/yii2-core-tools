@@ -12,7 +12,6 @@ use yii\db\ActiveRecord;
 /**
  * Trait Relations
  * Функции, общеприменимые ко всем таблицам связей.
- * @package app\ActiveRecords\relations
  */
 trait Relations {
 
@@ -42,9 +41,8 @@ trait Relations {
 		$link = new self();
 
 		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
-		$masterValue = self::extractKeyValue($master);
 
-		return static::findAll([$first_name => $masterValue]);
+		return static::findAll([$first_name => self::extractKeyValue($master)]);
 	}
 
 	/**
@@ -123,10 +121,7 @@ trait Relations {
 		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
 		$second_name = ArrayHelper::getValue($link->rules(), '0.0.1', new Exception('Не удалось получить атрибут для связи'));
 
-		$masterValue = self::extractKeyValue($master);
-		$slaveValue = self::extractKeyValue($slave);
-
-		if (null !== $model = static::findOne([$first_name => $masterValue, $second_name => $slaveValue])) {
+		if (null !== $model = static::findOne([$first_name => self::extractKeyValue($master), $second_name => self::extractKeyValue($slave)])) {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
@@ -176,9 +171,7 @@ trait Relations {
 			foreach ($master as $item) self::clearLinks($item);
 		}
 
-		$masterValue = self::extractKeyValue($master);
-
-		if (null !== $model = static::findOne([$first_name => $masterValue])) {
+		if (null !== $model = static::findOne([$first_name => self::extractKeyValue($master)])) {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
