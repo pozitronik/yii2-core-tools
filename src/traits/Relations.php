@@ -30,6 +30,40 @@ trait Relations {
 	}
 
 	/**
+	 * Находит и возвращает существующую связь к базовой модели
+	 * @param ActiveRecord|int|string $master
+	 * @return self[]
+	 * @throws Throwable
+	 */
+	public static function currentLink($master):array {
+		if (empty($master)) return [];
+
+		/** @var ActiveRecord $link */
+		$link = new self();
+
+		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
+		$masterValue = self::extractKeyValue($master);
+
+		return static::findAll([$first_name => $masterValue]);
+	}
+
+	/**
+	 * Возвращает все связи к базовой модели
+	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $master
+	 * @return self[]
+	 */
+	public static function currentLinks($master) {
+		$links = [[]];
+		if (is_array($master)) {
+			foreach ($master as $master_item) {
+				$links[] = self::currentLink($master_item);
+			}
+		} else $links[] = self::currentLink($master);
+
+		return array_merge(...$links);
+	}
+
+	/**
 	 * Линкует в этом релейшене две модели. Модели могут быть заданы как через айдишники, так и моделью, и ещё тупо строкой
 	 * @param ActiveRecord|int|string $master
 	 * @param ActiveRecord|int|string $slave
@@ -157,4 +191,12 @@ trait Relations {
 	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	abstract public static function findOne($condition);
+
+	/**
+	 * @param mixed $condition
+	 * @return static[]
+	 * @see ActiveRecord::findAll()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 */
+	abstract public static function findAll($condition);
 }
