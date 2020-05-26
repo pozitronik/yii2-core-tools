@@ -63,8 +63,9 @@ trait Relations {
 	 * Возвращает все связи к базовой модели
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $master
 	 * @return self[]
+	 * @throws Throwable
 	 */
-	public static function currentLinks($master) {
+	public static function currentLinks($master):array {
 		$links = [[]];
 		if (is_array($master)) {
 			foreach ($master as $master_item) {
@@ -100,12 +101,13 @@ trait Relations {
 	 * Линкует в этом релейшене две модели. Модели могут быть заданы как через айдишники, так и напрямую, в виде массивов или так.
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $master
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $slave
-	 * @param bool $relink связи будут установлены заново
 	 * @throws Throwable
 	 */
-	public static function linkModels($master, $slave, bool $relink = false):void {
+	public static function linkModels($master, $slave):void {
 		if (empty($master)) return;
-		if ($relink) self::clearLinks($master);
+		/*Удалим разницу (она может быть полной при очистке)*/
+		self::dropDiffered($master, $slave);
+
 		if (empty($slave)) return;
 		if (is_array($master)) {
 			foreach ($master as $master_item) {
@@ -120,6 +122,29 @@ trait Relations {
 				self::linkModel($master, $slave_item);
 			}
 		} else self::linkModel($master, $slave);
+	}
+
+	/**
+	 * Вычисляет разницу между текущими и задаваемыми связями, удаляя те элементы, которые есть в текущей связи, но отсутствуют в устанавливаемой
+	 * @param $master
+	 * @param $slave
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private static function dropDiffered($master, $slave):void {
+		$currentItems = self::currentLinks($master);
+		$slaveItemsKeys = [];
+		$second_name = self::getSecondAttributeName();
+		if (is_array($slave)) {//вычисляем ключи линкованных моделей
+			foreach ($slave as $value) $slaveItemsKeys[] = self::extractKeyValue($value);
+		} else {
+			$slaveItemsKeys[] = self::extractKeyValue($slave);
+		}
+		foreach ($currentItems as $item) {//все
+			if (!in_array($item->$second_name, $slaveItemsKeys)) {
+				$item::unlinkModel($master, $item->$second_name);
+			}
+		}
 	}
 
 	/**
