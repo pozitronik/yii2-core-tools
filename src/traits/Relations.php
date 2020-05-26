@@ -29,6 +29,26 @@ trait Relations {
 	}
 
 	/**
+	 * @return string
+	 * @throws Throwable
+	 */
+	private static function getFirstAttributeName():string {
+		/** @var ActiveRecord $link */
+		$link = new self();
+		return ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
+	}
+
+	/**
+	 * @return string
+	 * @throws Throwable
+	 */
+	private static function getSecondAttributeName():string {
+		/** @var ActiveRecord $link */
+		$link = new self();
+		return ArrayHelper::getValue($link->rules(), '0.0.1', new Exception('Не удалось получить атрибут для связи'));
+	}
+
+	/**
 	 * Находит и возвращает существующую связь к базовой модели
 	 * @param ActiveRecord|int|string $master
 	 * @return self[]
@@ -36,13 +56,7 @@ trait Relations {
 	 */
 	public static function currentLink($master):array {
 		if (empty($master)) return [];
-
-		/** @var ActiveRecord $link */
-		$link = new self();
-
-		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
-
-		return static::findAll([$first_name => self::extractKeyValue($master)]);
+		return static::findAll([self::getFirstAttributeName() => self::extractKeyValue($master)]);
 	}
 
 	/**
@@ -73,8 +87,8 @@ trait Relations {
 		/** @var ActiveRecord $link */
 		$link = new self();
 
-		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
-		$second_name = ArrayHelper::getValue($link->rules(), '0.0.1', new Exception('Не удалось получить атрибут для связи'));
+		$first_name = self::getFirstAttributeName();
+		$second_name = self::getSecondAttributeName();
 
 		$link->$first_name = self::extractKeyValue($master);
 		$link->$second_name = self::extractKeyValue($slave);
@@ -116,12 +130,8 @@ trait Relations {
 	 */
 	public static function unlinkModel($master, $slave):void {
 		if (empty($master) || empty($slave)) return;
-		/** @var ActiveRecord $link */
-		$link = new self();
-		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
-		$second_name = ArrayHelper::getValue($link->rules(), '0.0.1', new Exception('Не удалось получить атрибут для связи'));
 
-		if (null !== $model = static::findOne([$first_name => self::extractKeyValue($master), $second_name => self::extractKeyValue($slave)])) {
+		if (null !== $model = static::findOne([self::getFirstAttributeName() => self::extractKeyValue($master), self::getSecondAttributeName() => self::extractKeyValue($slave)])) {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
@@ -163,15 +173,12 @@ trait Relations {
 	 */
 	public static function clearLinks($master):void {
 		if (empty($master)) return;
-		/** @var ActiveRecord $link */
-		$link = new self();
-		$first_name = ArrayHelper::getValue($link->rules(), '0.0.0', new Exception('Не удалось получить атрибут для связи'));
 
 		if (is_array($master)) {
 			foreach ($master as $item) self::clearLinks($item);
 		}
 
-		if (null !== $model = static::findOne([$first_name => self::extractKeyValue($master)])) {
+		if (null !== $model = static::findOne([self::getFirstAttributeName() => self::extractKeyValue($master)])) {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
