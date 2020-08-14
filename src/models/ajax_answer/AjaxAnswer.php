@@ -59,7 +59,7 @@ class AjaxAnswer extends Model {
 	}
 
 	/**
-	 * @param int $count
+	 * @param int|null $count
 	 */
 	public function setCount(?int $count):void {
 		$this->_count = $count;
@@ -73,7 +73,7 @@ class AjaxAnswer extends Model {
 	}
 
 	/**
-	 * @param array $items
+	 * @param array|null $items
 	 */
 	public function setItems(?array $items):void {
 		$this->_items = $items;
