@@ -203,7 +203,7 @@ trait Relations {
 			foreach ($master as $item) self::clearLinks($item);
 		}
 
-		if (null !== $model = static::findOne([self::getFirstAttributeName() => self::extractKeyValue($master)])) {
+		foreach (static::findAll([self::getFirstAttributeName() => self::extractKeyValue($master)]) as $model) {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
