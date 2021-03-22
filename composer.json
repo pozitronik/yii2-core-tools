@@ -27,5 +27,16 @@
 		"psr-4": {
 			"pozitronik\\core\\": "src"
 		}
-	}
+	},
+	"config": {
+		"fxp-asset": {
+			"enabled": false
+		}
+	},
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://asset-packagist.org"
+		}
+	]
 }
