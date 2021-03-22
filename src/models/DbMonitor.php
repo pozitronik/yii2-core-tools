@@ -50,7 +50,7 @@ class DbMonitor {
 	 * @param int $id
 	 * @return null|int Affected rows count, null on error
 	 */
-	public function kill(int $id):?int {
+	public static function kill(int $id):?int {
 		try {
 			return Yii::$app->db->createCommand("kill {$id}")->execute();
 		} catch (Throwable $t) {
