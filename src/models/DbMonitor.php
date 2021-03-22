@@ -47,12 +47,12 @@ class DbMonitor {
 	}
 
 	/**
-	 * @param int $id
+	 * @param int $process_id
 	 * @return null|int Affected rows count, null on error
 	 */
-	public static function kill(int $id):?int {
+	public static function kill(int $process_id):?int {
 		try {
-			return Yii::$app->db->createCommand("kill {$id}")->execute();
+			return Yii::$app->db->createCommand("kill {$process_id}")->execute();
 		} catch (Throwable $t) {
 			return null;
 		}
