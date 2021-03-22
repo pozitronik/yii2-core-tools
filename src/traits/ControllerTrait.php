@@ -6,6 +6,7 @@ namespace pozitronik\core\traits;
 use pozitronik\core\helpers\ModuleHelper;
 use pozitronik\helpers\ArrayHelper;
 use pozitronik\helpers\ReflectionHelper;
+use pozitronik\helpers\Utils;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionException;
@@ -13,12 +14,42 @@ use Throwable;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\UnknownClassException;
-use yii\web\Controller;
+use yii\helpers\Url;
 
 /**
  * Трейт для аугментации контроллеров
  */
 trait ControllerTrait {
+
+	/**
+	 * По имени экшена возвращает абсолютный Url в приложении
+	 * @param string $action
+	 * @param array $params
+	 * @return array
+	 * @example SomeController::GetActionUrl('index', ['id' => 1]) => ['/some/index', 'id' => 1]
+	 */
+	public static function GetActionUrl(string $action, array $params = []):array {
+		$controllerId = self::ExtractControllerId(self::class);
+		$route = Utils::setAbsoluteUrl($controllerId.Utils::setAbsoluteUrl($action));
+		if ([] !== $params) {
+			array_unshift($params, $route);
+		} else {
+			$params = [$route];
+		}
+		return $params;
+	}
+
+	/**
+	 * По имени экшена возвращает строковой абсолютный Url в приложении
+	 * @param string $action
+	 * @param array $params
+	 * @return string
+	 * @example SomeController::to('index', ['id' => 1]) => '/some/index?id=1'
+	 */
+	public static function to(string $action, array $params = []):string {
+		return Url::to(self::GetActionUrl($action, $params));
+	}
+
 	/**
 	 * Возвращает все экшены контроллера
 	 * @param bool $asRequestName Привести имя экшена к виду в запросе
