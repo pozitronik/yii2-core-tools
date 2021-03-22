@@ -117,7 +117,7 @@ trait Relations {
 					}
 				} else self::linkModel($master_item, $slave);
 			}
-		} else if (is_array($slave)) {
+		} elseif (is_array($slave)) {
 			foreach ($slave as $slave_item) {
 				self::linkModel($master, $slave_item);
 			}
@@ -184,7 +184,7 @@ trait Relations {
 					}
 				} else self::unlinkModel($master_item, $slave);
 			}
-		} else if (is_array($slave)) {
+		} elseif (is_array($slave)) {
 			foreach ($slave as $slave_item) {
 				self::unlinkModel($master, $slave_item);
 			}

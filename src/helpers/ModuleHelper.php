@@ -45,7 +45,7 @@ class ModuleHelper {
 		foreach (Yii::$app->modules as $name => $module) {
 			if (is_object($module)) {
 				if ($module instanceof Module) $modules[$name] = $module;
-			} else if (null !== $loadedModule = self::LoadModule($name, $module)) {
+			} elseif (null !== $loadedModule = self::LoadModule($name, $module)) {
 				$modules[$name] = $loadedModule;
 			}
 		}
