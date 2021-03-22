@@ -38,7 +38,7 @@ trait ActiveQueryExtended {
 	 * В некоторых поисковых моделях часто используется такое условие: если в POST передана дата, то искать все записи за неё, иначе игнорировать
 	 * @param string|array $field
 	 * @param string|null $value
-	 * @param boolean $formatted_already - true: принять дату как уже форматированную в Y-m-d (для тех случаев, где Женька сделал так)
+	 * @param bool $formatted_already - true: принять дату как уже форматированную в Y-m-d (для тех случаев, где Женька сделал так)
 	 * @return ActiveQuery|self
 	 * @throws Throwable
 	 */
@@ -78,7 +78,7 @@ trait ActiveQueryExtended {
 	/**
 	 * Держим долго считаемый count для запроса в кеше
 	 * @param int $duration
-	 * @return integer
+	 * @return int
 	 */
 	public function countFromCache(int $duration = DateHelper::SECONDS_IN_HOUR):int {
 		$countQuery = clone $this;
