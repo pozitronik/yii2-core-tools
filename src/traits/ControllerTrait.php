@@ -21,14 +21,18 @@ use yii\web\Controller;
 trait ControllerTrait {
 	/**
 	 * Возвращает все экшены контроллера
-	 * @param Controller $controllerClass
+	 * @param bool $asRequestName Привести имя экшена к виду в запросе
 	 * @return string[]
 	 * @throws ReflectionException
 	 * @throws UnknownClassException
 	 */
-	public static function GetControllerActions(Controller $controllerClass):array {
-		$names = ArrayHelper::getColumn(ReflectionHelper::GetMethods($controllerClass), 'name');
-		return preg_filter('/^action([A-Z])(\w+?)/', '$1$2', $names);
+	public static function GetControllerActions(bool $asRequestName = true):array {
+		$names = ArrayHelper::getColumn(ReflectionHelper::GetMethods(self::class), 'name');
+		$names = preg_filter('/^action([A-Z])(\w+?)/', '$1$2', $names);
+		if ($asRequestName) {
+			foreach ($names as $key => &$name) $name = self::GetActionRequestName($name);
+		}
+		return $names;
 	}
 
 	/**
