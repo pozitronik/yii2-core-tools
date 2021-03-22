@@ -39,6 +39,7 @@ trait ControllerTrait {
 	 * @example OtherActionName => other-action-name
 	 */
 	public static function GetActionRequestName(string $action):string {
+		/** @var array $lines */
 		$lines = preg_split('/(?=[A-Z])/', $action, -1, PREG_SPLIT_NO_EMPTY);
 		if ('action' === $lines[0]) unset($lines[0]);
 		return mb_strtolower(implode('-', $lines));
