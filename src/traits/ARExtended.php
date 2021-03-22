@@ -95,7 +95,7 @@ trait ARExtended {
 	 */
 	public static function getInstance($searchCondition):self {
 		$instance = static::find()->where($searchCondition)->one();
-		return $instance??new static;
+		return $instance??new static();
 	}
 
 	/**
