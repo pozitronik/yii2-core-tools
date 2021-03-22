@@ -3,6 +3,7 @@ declare(strict_types = 1);
 
 namespace pozitronik\core\models;
 
+use pozitronik\helpers\ArrayHelper;
 use yii\base\Model;
 use yii\db\ActiveQuery;
 
@@ -27,16 +28,17 @@ class SqlDebugInfo extends Model {
 
 	/**
 	 * extract debug information from sql if exists
-	 * @param string $sql
+	 * @param null|string $sql
 	 * @return bool
 	 */
-	public function getFromSql(string $sql):bool {
+	public function getFromSql(?string $sql):bool {
 		$this->user_id = null;
 		$this->operation = null;
+		if (null === $sql) return false;
 		$matches = [];
 		$r = preg_match('/\/\*debug=>(.*?)<=debug\*\//', $sql, $matches);
 		if (false !== $r) {
-			$this->setAttributes(json_decode($matches[1], true), false);
+			$this->setAttributes(json_decode(ArrayHelper::getValue($matches, '1', '{}'), true), false);
 			return true;
 		}
 
