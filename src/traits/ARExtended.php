@@ -32,7 +32,7 @@ trait ARExtended {
 	 *
 	 * @example if (null !== $user = Users::findModel($id)) return $user
 	 */
-	public static function findModel($id, ?Throwable $throw = null):?self {
+	public static function findModel($id, ?Throwable $throw = null):?static {
 		if (null !== ($model = static::findOne($id))) return $model;
 		if (null !== $throw) {
 			if (class_exists(SysExceptions::class)) {
