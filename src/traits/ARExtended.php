@@ -18,119 +18,21 @@ use yii\helpers\VarDumper;
 /**
  * Trait ARExtended
  * Расширения модели ActiveRecord
- *
- * @property array $attributes
- * @property bool $isNewRecord
- * @property array $errors
- * @property bool $deleted
  */
 trait ARExtended {
-
-	/**
-	 * @param $condition
-	 * @see ActiveRecord::findOne()
-	 */
-	abstract public static function findOne($condition);
-
-	/**
-	 * @param $condition
-	 * @see ActiveRecord::findAll()
-	 */
-	abstract public static function findAll($condition);
-
-	/**
-	 * @see ActiveRecord::getDb()
-	 */
-	abstract public static function getDb();
-
-	/**
-	 * @see ActiveRecord::tableName()
-	 */
-	abstract public static function tableName();
-
-	/**
-	 * @see ActiveRecord::primaryKey()
-	 */
-	abstract public static function primaryKey();
-
-	/**
-	 * @see ActiveRecord::save()
-	 */
-	abstract public function save();
-
-	/**
-	 * @see ActiveRecord::formName()
-	 */
-	abstract public function formName();
-
-	/**
-	 * @param $name
-	 * @param $value
-	 * @see ActiveRecord::setAttribute()
-	 */
-	abstract public function setAttribute($name, $value);
-
-	/**
-	 * @param $values
-	 * @param bool $safeOnly
-	 * @see ActiveRecord::setAttributese()
-	 */
-	abstract public function setAttributes($values, $safeOnly = true);
-
-	/**
-	 * @see ActiveRecord::hasAttribute()
-	 * @param $name
-	 */
-	abstract public function hasAttribute($name);
-
-	/**
-	 * @see ActiveRecord::hasProperty()
-	 * @param $name
-	 */
-	abstract public function hasProperty($name);
-
-	/**
-	 * @see ActiveRecord::canSetProperty()
-	 * @param $name
-	 * @param bool $checkVars
-	 * @param bool $checkBehaviors
-	 */
-	abstract public function canSetProperty($name, $checkVars = true, $checkBehaviors = true);
-
-	/**
-	 * @see ActiveRecord::afterDelete()
-	 */
-	abstract public function afterDelete();
-
-	/**
-	 * @see ActiveRecord::delete()
-	 */
-	abstract public function delete();
-
-	/**
-	 * @see ActiveRecord::load()
-	 * @param $data
-	 * @param null $formName
-	 */
-	abstract public function load($data, $formName = null);
-
-	/**
-	 * @see ActiveRecord::refresh()
-	 */
-	abstract public function refresh();
 
 	/**
 	 * Обёртка для быстрого поиска моделей с опциональным выбросом логируемого исключения
 	 * Упрощает проверку поиска моделей
 	 * @param mixed $id Поисковое условие (предпочтительно primaryKey, но не ограничиваемся им)
 	 * @param null|Throwable $throw - Если передано исключение, оно выбросится в случае ненахождения модели
-	 * @return null|static
+	 * @return null|self
 	 * @throws Throwable
 	 * @example Users::findModel($id, new NotFoundException('Пользователь не найден'))
 	 *
 	 * @example if (null !== $user = Users::findModel($id)) return $user
 	 */
-	public static function findModel($id, ?Throwable $throw = null):?static {
+	public static function findModel($id, ?Throwable $throw = null):?self {
 		if (null !== ($model = static::findOne($id))) return $model;
 		if (null !== $throw) {
 			if (class_exists(SysExceptions::class)) {
@@ -189,7 +91,7 @@ trait ARExtended {
 	/**
 	 * Возвращает существующую запись в ActiveRecord-модели, найденную по условию, если же такой записи нет - возвращает новую модель
 	 * @param array|string $searchCondition
-	 * @return self
+	 * @return ActiveRecord|self
 	 */
 	public static function getInstance($searchCondition):self {
 		$instance = static::find()->where($searchCondition)->one();
@@ -206,6 +108,7 @@ trait ARExtended {
 	 * @param bool $throwOnError
 	 * @return ActiveRecord|self|null
 	 * @throws Exception
+	 * @throws InvalidConfigException
 	 */
 	public static function addInstance(array $searchCondition, ?array $fields = null, bool $ignoreEmptyCondition = true, bool $forceUpdate = false, bool $throwOnError = true):?self {
 		if ($ignoreEmptyCondition && (empty($searchCondition) || (is_array($searchCondition) && empty(reset($searchCondition))))) return null;
@@ -226,6 +129,7 @@ trait ARExtended {
 	 * @return array
 	 */
 	public function newAttributes(array $changedAttributes):array {
+		/** @var ActiveRecord $this */
 		$newAttributes = [];
 		$currentAttributes = $this->attributes;
 		foreach ($changedAttributes as $item => $value) {
@@ -240,6 +144,7 @@ trait ARExtended {
 	 * @return array
 	 */
 	public function changedAttributes(array $changedAttributes):array {
+		/** @var ActiveRecord $this */
 		$updatedAttributes = [];
 		$currentAttributes = $this->attributes;
 		foreach ($changedAttributes as $item => $value) {
@@ -406,6 +311,7 @@ trait ARExtended {
 	 */
 	public static function deleteAllEx($condition = null, $transactional = true):?int {
 		$self_class_name = static::class;
+		/** @var static $self_class */
 		$self_class = new $self_class_name();
 		$deletedModels = $self_class::findAll($condition);
 		$dc = 0;
