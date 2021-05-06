@@ -37,11 +37,12 @@ trait ControllerTrait {
 	 * По имени экшена возвращает строковой абсолютный Url в приложении
 	 * @param string $action
 	 * @param array $params
+	 * @param bool|string $scheme @see Url::to() $scheme parameter
 	 * @return string
 	 * @example SomeController::to('index', ['id' => 1]) => '/some/index?id=1'
 	 */
-	public static function to(string $action, array $params = []):string {
-		return Url::to(self::GetActionUrl($action, $params));
+	public static function to(string $action, array $params = [], $scheme = false):string {
+		return Url::to(self::GetActionUrl($action, $params), $scheme);
 	}
 
 	/**
