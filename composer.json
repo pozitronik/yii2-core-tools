@@ -15,6 +15,7 @@
 	],
 	"minimum-stability": "dev",
 	"require": {
+		"php": ">=7.4",
 		"pozitronik/yii2-helpers": "dev-master"
 	},
 	"require-dev": {
