@@ -311,7 +311,6 @@ trait ARExtended {
 	 */
 	public static function deleteAllEx($condition = null, $transactional = true):?int {
 		$self_class_name = static::class;
-		/** @var static $self_class */
 		$self_class = new $self_class_name();
 		$deletedModels = $self_class::findAll($condition);
 		$dc = 0;

@@ -53,7 +53,7 @@ class DbMonitor {
 	public static function kill(int $process_id):?int {
 		try {
 			return Yii::$app->db->createCommand("kill {$process_id}")->execute();
-		} catch (Throwable $t) {
+		} /** @noinspection BadExceptionsProcessingInspection */ catch (Throwable $t) {
 			return null;
 		}
 	}

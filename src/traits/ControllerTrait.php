@@ -56,7 +56,7 @@ trait ControllerTrait {
 		$names = ArrayHelper::getColumn(ReflectionHelper::GetMethods(self::class), 'name');
 		$names = preg_filter('/^action([A-Z])(\w+?)/', '$1$2', $names);
 		if ($asRequestName) {
-			foreach ($names as $key => &$name) $name = self::GetActionRequestName($name);
+			foreach ($names as &$name) $name = self::GetActionRequestName($name);
 		}
 		return $names;
 	}

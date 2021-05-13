@@ -4,6 +4,7 @@ declare(strict_types = 1);
 namespace pozitronik\core\models;
 
 use pozitronik\helpers\ArrayHelper;
+use Throwable;
 use yii\base\Model;
 use yii\db\ActiveQuery;
 
@@ -30,6 +31,7 @@ class SqlDebugInfo extends Model {
 	 * extract debug information from sql if exists
 	 * @param null|string $sql
 	 * @return bool
+	 * @throws Throwable
 	 */
 	public function getFromSql(?string $sql):bool {
 		$this->user_id = null;
@@ -46,10 +48,7 @@ class SqlDebugInfo extends Model {
 	}
 
 	public static function addDebugInfo(ActiveQuery $query, ?string $operation = null, ?int $user_id = null):ActiveQuery {
-		$sqlDebugInfo = new self([
-			'operation' => $operation,
-			'user_id' => $user_id
-		]);
+		$sqlDebugInfo = new self(compact('operation', 'user_id'));
 		return $query->andWhere("1 = 1{$sqlDebugInfo}");
 	}
 

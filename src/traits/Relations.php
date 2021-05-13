@@ -102,6 +102,7 @@ trait Relations {
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $master
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $slave
 	 * @throws Throwable
+	 * @noinspection NotOptimalIfConditionsInspection
 	 */
 	public static function linkModels($master, $slave):void {
 		if (empty($master)) return;
@@ -130,6 +131,7 @@ trait Relations {
 	 * @param $slave
 	 * @throws InvalidConfigException
 	 * @throws Throwable
+	 * @noinspection TypeUnsafeArraySearchInspection
 	 */
 	private static function dropDiffered($master, $slave):void {
 		$currentItems = self::currentLinks($master);
@@ -173,6 +175,7 @@ trait Relations {
 	 * @see Privileges::setDropUserRights
 	 *
 	 * Передавать массивы строк/идентификаторов нельзя (только массив моделей)
+	 * @noinspection NotOptimalIfConditionsInspection
 	 */
 	public static function unlinkModels($master, $slave):void {
 		if (empty($master) || empty($slave)) return;

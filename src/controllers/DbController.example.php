@@ -16,8 +16,9 @@ class DbController extends Controller {
 	/**
 	 * Список процессов на базе данных
 	 * @return string
+	 * @throws Throwable
 	 */
-	public function actionProcessList() {
+	public function actionProcessList():string {
 		$provider = new ArrayDataProvider([
 			'allModels' => DbMonitor::ProcessList(),
 			'sort' => [
