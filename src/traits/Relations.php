@@ -60,6 +60,17 @@ trait Relations {
 	}
 
 	/**
+	 * Находит и возвращает существующую связь от базовой модели
+	 * @param ActiveRecord|int|string $slave
+	 * @return self[]
+	 * @throws Throwable
+	 */
+	public static function currentBackLink($slave):array {
+		if (empty($slave)) return [];
+		return static::findAll([self::getSecondAttributeName() => self::extractKeyValue($slave)]);
+	}
+
+	/**
 	 * Возвращает все связи к базовой модели
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $master
 	 * @return self[]
@@ -72,6 +83,23 @@ trait Relations {
 				$links[] = self::currentLink($master_item);
 			}
 		} else $links[] = self::currentLink($master);
+
+		return array_merge(...$links);
+	}
+
+	/**
+	 * Возвращает все связи от базовой модели
+	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $slave
+	 * @return self[]
+	 * @throws Throwable
+	 */
+	public static function currentBackLinks($slave):array {
+		$links = [[]];
+		if (is_array($slave)) {
+			foreach ($slave as $slave_item) {
+				$links[] = self::currentBackLink($slave_item);
+			}
+		} else $links[] = self::currentBackLink($slave);
 
 		return array_merge(...$links);
 	}
@@ -101,13 +129,14 @@ trait Relations {
 	 * Линкует в этом релейшене две модели. Модели могут быть заданы как через айдишники, так и напрямую, в виде массивов или так.
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $master
 	 * @param int|int[]|string|string[]|ActiveRecord|ActiveRecord[] $slave
+	 * @param bool $backLink Если связь задана в "обратную сторону", т.е. основная модель присоединяется к вторичной.
 	 * @throws Throwable
 	 * @noinspection NotOptimalIfConditionsInspection
 	 */
-	public static function linkModels($master, $slave):void {
-		if (empty($master)) return;
+	public static function linkModels($master, $slave, bool $backLink = false):void {
+		if (($backLink && empty($slave)) || (!$backLink && empty($master))) return;
 		/*Удалим разницу (она может быть полной при очистке)*/
-		self::dropDiffered($master, $slave);
+		self::dropDiffered($master, $slave, $backLink);
 
 		if (empty($slave)) return;
 		if (is_array($master)) {
@@ -129,24 +158,43 @@ trait Relations {
 	 * Вычисляет разницу между текущими и задаваемыми связями, удаляя те элементы, которые есть в текущей связи, но отсутствуют в устанавливаемой
 	 * @param $master
 	 * @param $slave
+	 * @param bool $backLink Если связь задана в "обратную сторону", т.е. основная модель присоединяется к вторичной.
 	 * @throws InvalidConfigException
 	 * @throws Throwable
 	 * @noinspection TypeUnsafeArraySearchInspection
 	 */
-	private static function dropDiffered($master, $slave):void {
-		$currentItems = self::currentLinks($master);
-		$slaveItemsKeys = [];
-		$second_name = self::getSecondAttributeName();
-		if (is_array($slave)) {//вычисляем ключи линкованных моделей
-			foreach ($slave as $value) $slaveItemsKeys[] = self::extractKeyValue($value);
+	private static function dropDiffered($master, $slave, bool $backLink = false):void {
+		if ($backLink) {
+			$currentItems = self::currentBackLinks($slave);
+			$masterItemsKeys = [];
+			$first_name = self::getFirstAttributeName();
+			if (is_array($master)) {//вычисляем ключи моделей, к которым привязан линк
+				foreach ($master as $value) $masterItemsKeys[] = self::extractKeyValue($value);
+			} else {
+				$masterItemsKeys[] = self::extractKeyValue($master);
+			}
+			foreach ($currentItems as $item) {//все
+				if (!in_array($item->$first_name, $masterItemsKeys)) {
+					$item::unlinkModel($item->$first_name, $slave);
+				}
+			}
+
 		} else {
-			$slaveItemsKeys[] = self::extractKeyValue($slave);
-		}
-		foreach ($currentItems as $item) {//все
-			if (!in_array($item->$second_name, $slaveItemsKeys)) {
-				$item::unlinkModel($master, $item->$second_name);
+			$currentItems = self::currentLinks($master);
+			$slaveItemsKeys = [];
+			$second_name = self::getSecondAttributeName();
+			if (is_array($slave)) {//вычисляем ключи линкованных моделей
+				foreach ($slave as $value) $slaveItemsKeys[] = self::extractKeyValue($value);
+			} else {
+				$slaveItemsKeys[] = self::extractKeyValue($slave);
+			}
+			foreach ($currentItems as $item) {//все
+				if (!in_array($item->$second_name, $slaveItemsKeys)) {
+					$item::unlinkModel($master, $item->$second_name);
+				}
 			}
 		}
+
 	}
 
 	/**
