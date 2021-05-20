@@ -23,7 +23,7 @@ trait ControllerTrait {
 	 * @example SomeController::GetActionUrl('index', ['id' => 1]) => ['/some/index', 'id' => 1]
 	 */
 	public static function GetActionUrl(string $action, array $params = []):array {
-		$controllerId = self::ExtractControllerId(self::class);
+		$controllerId = static::ExtractControllerId(static::class);
 		$route = Utils::setAbsoluteUrl($controllerId.Utils::setAbsoluteUrl($action));
 		if ([] !== $params) {
 			array_unshift($params, $route);
@@ -53,7 +53,7 @@ trait ControllerTrait {
 	 * @throws UnknownClassException
 	 */
 	public static function GetControllerActions(bool $asRequestName = true):array {
-		$names = ArrayHelper::getColumn(ReflectionHelper::GetMethods(self::class), 'name');
+		$names = ArrayHelper::getColumn(ReflectionHelper::GetMethods(static::class), 'name');
 		$names = preg_filter('/^action([A-Z])(\w+?)/', '$1$2', $names);
 		if ($asRequestName) {
 			foreach ($names as &$name) $name = self::GetActionRequestName($name);
