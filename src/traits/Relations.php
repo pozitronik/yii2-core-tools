@@ -112,6 +112,13 @@ trait Relations {
 	 */
 	public static function linkModel($master, $slave):void {
 		if (empty($master) || empty($slave)) return;
+		/*Пришёл запрос на связывание ActiveRecord-модели, ещё не имеющей primary key*/
+		if (is_subclass_of($master, ActiveRecord::class, false) && $master->isNewRecord) {
+			$master->on(ActiveRecord::EVENT_AFTER_INSERT, function($event) {//отложим связывание после сохранения
+				self::linkModel($event->data[0], $event->data[1]);
+			}, [$master, $slave]);
+			return;
+		}
 
 		/** @var ActiveRecord $link */
 		$link = new self();
