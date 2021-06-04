@@ -234,14 +234,7 @@ trait Relations {
 	public static function clearLinks($master):void {
 		if (empty($master)) return;
 
-		if (is_array($master)) {
-			foreach ($master as $item) self::clearLinks($item);
-		}
-
-		foreach (static::findAll([self::getFirstAttributeName() => self::extractKeyValue($master)]) as $model) {
-			/** @var ActiveRecord $model */
-			$model->delete();
-		}
+		static::deleteAll([self::getFirstAttributeName() => self::extractKeysValues($master)]);
 	}
 
 	/**
