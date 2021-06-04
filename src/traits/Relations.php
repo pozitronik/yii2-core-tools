@@ -55,8 +55,7 @@ trait Relations {
 	 * @throws Throwable
 	 */
 	public static function currentLink($master):array {
-		if (empty($master)) return [];
-		return static::findAll([self::getFirstAttributeName() => self::extractKeyValue($master)]);
+		return self::getLinks(self::getFirstAttributeName(), $master);
 	}
 
 	/**
@@ -66,8 +65,7 @@ trait Relations {
 	 * @throws Throwable
 	 */
 	public static function currentBackLink($slave):array {
-		if (empty($slave)) return [];
-		return static::findAll([self::getSecondAttributeName() => self::extractKeyValue($slave)]);
+		return self::getLinks(self::getSecondAttributeName(), $slave);
 	}
 
 	/**
@@ -77,14 +75,7 @@ trait Relations {
 	 * @throws Throwable
 	 */
 	public static function currentLinks($master):array {
-		$links = [[]];
-		if (is_array($master)) {
-			foreach ($master as $master_item) {
-				$links[] = self::currentLink($master_item);
-			}
-		} else $links[] = self::currentLink($master);
-
-		return array_merge(...$links);
+		return self::currentLink($master);
 	}
 
 	/**
@@ -94,14 +85,7 @@ trait Relations {
 	 * @throws Throwable
 	 */
 	public static function currentBackLinks($slave):array {
-		$links = [[]];
-		if (is_array($slave)) {
-			foreach ($slave as $slave_item) {
-				$links[] = self::currentBackLink($slave_item);
-			}
-		} else $links[] = self::currentBackLink($slave);
-
-		return array_merge(...$links);
+		return self::currentBackLink($slave);
 	}
 
 	/**
@@ -265,6 +249,27 @@ trait Relations {
 			/** @var ActiveRecord $model */
 			$model->delete();
 		}
+	}
+
+	/**
+	 * @param string $attribute
+	 * @param mixed $item
+	 * @return array
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private static function getLinks(string $attribute, $item):array {
+		return empty($item)?[]:static::findAll([$attribute => self::extractKeysValues($item)]);
+	}
+
+	/**
+	 * @param mixed $item
+	 * @return array
+	 * @throws InvalidConfigException
+	 * @throws Throwable
+	 */
+	private static function extractKeysValues($item):array {
+		return is_array($item)?array_map('self::extractKeyValue', $item):[self::extractKeyValue($item)];
 	}
 
 	/**
