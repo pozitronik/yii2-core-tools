@@ -273,4 +273,12 @@ trait Relations {
 	 * @noinspection ReturnTypeCanBeDeclaredInspection
 	 */
 	abstract public static function findAll($condition);
+
+	/**
+	 * @param mixed $condition
+	 * @return static[]
+	 * @see ActiveRecord::deleteAll()
+	 * @noinspection ReturnTypeCanBeDeclaredInspection
+	 */
+	abstract public static function deleteAll($condition);
 }
