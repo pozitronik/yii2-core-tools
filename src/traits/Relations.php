@@ -190,17 +190,25 @@ trait Relations {
 
 	/**
 	 * Удаляет единичную связь в этом релейшене
-	 * @param ActiveRecord|int|string $master
-	 * @param ActiveRecord|int|string $slave
+	 * @param mixed $master
+	 * @param mixed $slave
 	 * @throws Throwable
 	 */
 	public static function unlinkModel($master, $slave):void {
 		if (empty($master) || empty($slave)) return;
 
-		if (null !== $model = static::findOne([self::getFirstAttributeName() => self::extractKeyValue($master), self::getSecondAttributeName() => self::extractKeyValue($slave)])) {
-			/** @var ActiveRecord $model */
-			$model->delete();
+		$attr1 = self::getFirstAttributeName();
+		$attr2 = self::getSecondAttributeName();
+		if (is_array($master) && is_array($slave)) {
+			$where = ['OR'];
+			foreach ($master as $masterItem) {
+				$where[] = [$attr1 => self::extractKeyValue($masterItem), $attr2 => self::extractKeysValues($slave)];
+			}
+		} else {
+			$where = [$attr1 => self::extractKeysValues($master), $attr2 => self::extractKeysValues($slave)];
 		}
+
+		static::deleteAll($where);
 	}
 
 	/**
@@ -217,20 +225,7 @@ trait Relations {
 	 * @noinspection NotOptimalIfConditionsInspection
 	 */
 	public static function unlinkModels($master, $slave):void {
-		if (empty($master) || empty($slave)) return;
-		if (is_array($master)) {
-			foreach ($master as $master_item) {
-				if (is_array($slave)) {
-					foreach ($slave as $slave_item) {
-						self::unlinkModel($master_item, $slave_item);
-					}
-				} else self::unlinkModel($master_item, $slave);
-			}
-		} elseif (is_array($slave)) {
-			foreach ($slave as $slave_item) {
-				self::unlinkModel($master, $slave_item);
-			}
-		} else self::unlinkModel($master, $slave);
+		self::unlinkModel($master, $slave);
 	}
 
 	/**
