@@ -157,31 +157,29 @@ trait Relations {
 	private static function dropDiffered($master, $slave, bool $backLink = false):void {
 		if ($backLink) {
 			$currentItems = self::currentBackLinks($slave);
-			$masterItemsKeys = [];
+			$masterItemsKeys = self::extractKeysValues($master);
 			$first_name = self::getFirstAttributeName();
-			if (is_array($master)) {//вычисляем ключи моделей, к которым привязан линк
-				foreach ($master as $value) $masterItemsKeys[] = self::extractKeyValue($value);
-			} else {
-				$masterItemsKeys[] = self::extractKeyValue($master);
-			}
 			foreach ($currentItems as $item) {//все
+				$unlinks = [];
 				if (!in_array($item->$first_name, $masterItemsKeys)) {
-					$item::unlinkModel($item->$first_name, $slave);
+					$unlinks[] = $item->$first_name;
+				}
+				if ([] !== $unlinks) {
+					$item::unlinkModel($unlinks, $slave);
 				}
 			}
 
 		} else {
 			$currentItems = self::currentLinks($master);
-			$slaveItemsKeys = [];
+			$slaveItemsKeys = self::extractKeysValues($slave);
 			$second_name = self::getSecondAttributeName();
-			if (is_array($slave)) {//вычисляем ключи линкованных моделей
-				foreach ($slave as $value) $slaveItemsKeys[] = self::extractKeyValue($value);
-			} else {
-				$slaveItemsKeys[] = self::extractKeyValue($slave);
-			}
 			foreach ($currentItems as $item) {//все
+				$unlinks = [];
 				if (!in_array($item->$second_name, $slaveItemsKeys)) {
-					$item::unlinkModel($master, $item->$second_name);
+					$unlinks[] = $item->$second_name;
+				}
+				if ([] !== $unlinks) {
+					$item::unlinkModel($master, $unlinks);
 				}
 			}
 		}
