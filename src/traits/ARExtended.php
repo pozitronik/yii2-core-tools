@@ -4,7 +4,6 @@ declare(strict_types = 1);
 namespace pozitronik\core\traits;
 
 use pozitronik\core\models\LCQuery;
-use pozitronik\sys_exceptions\SysExceptions;
 use pozitronik\helpers\ArrayHelper;
 use RuntimeException;
 use yii\base\Exception;
@@ -35,11 +34,7 @@ trait ARExtended {
 	public static function findModel($id, ?Throwable $throw = null):?self {
 		if (null !== ($model = static::findOne($id))) return $model;
 		if (null !== $throw) {
-			if (class_exists(SysExceptions::class)) {
-				SysExceptions::log($throw, true, true);
-			} else {
-				throw $throw;
-			}
+			throw $throw;
 		}
 		return null;
 	}
