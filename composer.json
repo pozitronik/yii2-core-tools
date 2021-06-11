@@ -21,9 +21,6 @@
 	"require-dev": {
 		"yiisoft/yii2": "dev-master"
 	},
-	"suggest": {
-		"pozitronik/yii2-exceptionslogger": "Allows more advanced exceptions logging"
-	},
 	"autoload": {
 		"psr-4": {
 			"pozitronik\\core\\": "src"
