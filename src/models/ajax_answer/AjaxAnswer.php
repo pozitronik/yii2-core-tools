@@ -16,6 +16,7 @@ use yii\base\Model;
  * @property null|string $content Возвращаемый результат рендеринга (если необходим)
  *
  * @property-read array $answer Массив с ответом
+ * @deprecated since 1.2.0
  */
 class AjaxAnswer extends Model {
 	public const RESULT_OK = 0;/*Отработано*/

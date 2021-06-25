@@ -12,6 +12,8 @@ use yii\helpers\ArrayHelper;
 
 /**
  * Class ModuleHelper
+ * @deprecated since 1.2.0
+ * moved to pozitronik/yii2-helpers
  */
 class ModuleHelper {
 	/**

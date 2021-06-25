@@ -12,6 +12,7 @@ use yii\db\ActiveQuery;
  * Class SqlDebugInfo
  * @property null|string $operation Описание отслеживаемого процесса
  * @property null|int $user_id ID пользователя, вызвавшего процесс
+ * @deprecated since 1.2.0
  */
 class SqlDebugInfo extends Model {
 	public $operation;

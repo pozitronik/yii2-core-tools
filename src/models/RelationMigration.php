@@ -10,6 +10,8 @@ use yii\db\Migration;
  * @property string $table_name
  * @property string $first_key
  * @property string $second_key
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-relations instead
  */
 class RelationMigration extends Migration {
 

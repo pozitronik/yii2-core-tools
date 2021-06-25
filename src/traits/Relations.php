@@ -12,6 +12,8 @@ use yii\db\ActiveRecord;
 /**
  * Trait Relations
  * Функции, общеприменимые ко всем таблицам связей.
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-relations instead
  */
 trait Relations {
 

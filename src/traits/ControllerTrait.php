@@ -12,6 +12,8 @@ use yii\helpers\Url;
 
 /**
  * Трейт для аугментации контроллеров
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-traits instead
  */
 trait ControllerTrait {
 

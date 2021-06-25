@@ -11,6 +11,9 @@ use Yii;
  * Class DbMonitor
  * Прямой мониторинг и работа с базой.
  * Основная идея - видеть, кто и что крутит, с возможностью прибития
+ * DbMonitor.php
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-dbmon instead
  */
 class DbMonitor {
 	/**

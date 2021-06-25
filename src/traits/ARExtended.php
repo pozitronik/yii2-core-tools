@@ -17,6 +17,8 @@ use yii\helpers\VarDumper;
 /**
  * Trait ARExtended
  * Расширения модели ActiveRecord
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-traits instead
  */
 trait ARExtended {
 

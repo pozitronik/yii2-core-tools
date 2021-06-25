@@ -16,6 +16,7 @@ use yii\base\Model;
  * @property null|string $query
  * @property null|int $user_id
  * @property null|string $operation
+ * @deprecated since 1.2.0
  */
 class ProcessListItem extends Model {
 	public $id;

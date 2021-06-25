@@ -8,6 +8,7 @@ namespace pozitronik\core\traits;
  * Trait ModelExtended
  * Yii model extensions
  * @package app\models\core\traits
+ * @deprecated since 1.2.0
  */
 trait ModelExtended {
 

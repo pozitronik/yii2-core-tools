@@ -17,6 +17,8 @@ use yii\db\ExpressionInterface;
 /**
  * Обёртка над ActiveQuery с полезными и общеупотребительными функциями
  * http://www.yiiframework.com/doc-2.0/guide-db-active-record.html#customizing-query-classes
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-traits instead
  */
 trait ActiveQueryExtended {
 	use ActiveQueryTrait;

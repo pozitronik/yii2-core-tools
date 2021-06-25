@@ -18,7 +18,8 @@ use yii\helpers\Url;
  *
  * @property-read string $namespace
  * @property-read string $alias
- *
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-traits instead
  */
 trait ModuleExtended {
 	protected $_namespace;

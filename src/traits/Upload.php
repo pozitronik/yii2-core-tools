@@ -12,6 +12,7 @@ use yii\web\UploadedFile;
  * Trait Upload
  * @package app\models\core\traits
  * @property UploadedFile $uploadFileInstance
+ * @deprecated since 1.2.0
  */
 trait Upload {
 	public $uploadFileInstance;

@@ -10,6 +10,8 @@ use yii\web\Response;
 
 /**
  * Class DbController
+ * @deprecated since 1.2.0
+ * use pozitronik/yii2-dbmon instead
  */
 class DbController extends Controller {
 

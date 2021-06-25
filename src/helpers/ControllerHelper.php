@@ -13,6 +13,8 @@ use yii\base\InvalidConfigException;
 
 /**
  * Class ControllerHelper
+ * @deprecated since 1.2.0
+ * moved to pozitronik/yii2-helpers
  */
 class ControllerHelper {
 	use ControllerTrait;
